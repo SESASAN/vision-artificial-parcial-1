@@ -29,6 +29,11 @@ def log_transform(gray, c=None):
     return np.clip(s, 0, 255).astype(np.uint8)
 
 
+def negative_transform(gray):
+    """s = 255 - r."""
+    return 255 - gray.astype(np.uint8)
+
+
 def piecewise_linear(gray, r1, s1, r2, s2):
     """Transformación lineal a trozos (contrast stretching) definida por
     los puntos (0,0) -> (r1,s1) -> (r2,s2) -> (255,255)."""
