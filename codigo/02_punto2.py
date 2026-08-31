@@ -5,6 +5,14 @@
 # - Reflexión sobre las columnas (espejo horizontal).
 # - Reflexión sobre las filas (inversión vertical).
 
+# numpy: manejo de la imagen como matriz (recortes, reflexiones,
+#        reordenar canales) y funciones auxiliares como np.zeros_like.
+# matplotlib.pyplot: mostrar y guardar (savefig) las imágenes resultantes.
+# PIL.Image: leer archivos de imagen (.png/.tif) y convertir entre modos
+#            de color (RGB, L = escala de grises).
+# cv2 (OpenCV): trae las funciones de transformación de intensidad ya
+#      implementadas (gammaCorrection, logTransform, contrastStretching,
+#      bitwise_not, inRange), en vez de escribir la fórmula a mano.
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
@@ -20,7 +28,9 @@ plt.axis("off")
 
 # Imagen Reordenada - BGR
 
-# Indexación de matrices: invierte el orden del último eje (canales)
+# Indexación de matrices (numpy puro): paso negativo (::-1) sobre el
+# último eje, que corresponde a los canales de color. Invierte el orden
+# RGB -> BGR, intercambiando el canal rojo con el azul.
 bgr = img[:, :, ::-1]
 
 plt.imshow(bgr)
@@ -29,7 +39,8 @@ plt.savefig("../results/punto2_bgr.png", bbox_inches="tight", pad_inches=0)
 
 # Imagen Efecto Espejo
 
-# Reflexión sobre las columnas (invierte el eje horizontal)
+# Índice con paso negativo (::-1) sobre el eje de las columnas (eje 1):
+# recorre las columnas de derecha a izquierda -> espejo horizontal.
 espejo = img[:, ::-1, :]
 
 plt.imshow(espejo)
@@ -38,7 +49,8 @@ plt.savefig("../results/punto2_espejo.png", bbox_inches="tight", pad_inches=0)
 
 # Imagen Inversión Vertical
 
-# Reflexión sobre las filas (invierte el eje vertical)
+# Índice con paso negativo (::-1) sobre el eje de las filas (eje 0):
+# recorre las filas de abajo hacia arriba -> inversión vertical.
 invertida = img[::-1, :, :]
 
 plt.imshow(invertida)
