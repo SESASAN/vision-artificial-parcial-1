@@ -1,9 +1,20 @@
-"""Funciones de apoyo para las transformaciones de intensidad del taller."""
+"""Funciones de apoyo para las transformaciones de intensidad del taller.
+
+Toda la lógica está hecha con numpy: cada imagen en escala de grises se
+maneja como una matriz 2D de enteros (0-255), y las transformaciones se
+aplican con operaciones vectorizadas (sobre toda la matriz a la vez) en
+lugar de recorrer pixel por pixel con loops de Python.
+"""
 import numpy as np
 
 
 def to_uint8(img):
-    """Escala y convierte a uint8 (rango 0-255)."""
+    """Escala linealmente los valores de `img` a [0,255] y castea a uint8.
+
+    Se usa al final de las transformaciones cuyo resultado puede salirse
+    del rango 0-255 (como gamma_transform), para cumplir con el requisito
+    del enunciado de entregar siempre imágenes uint8.
+    """
     img = img.astype(np.float64)
     img -= img.min()
     if img.max() > 0:
@@ -12,7 +23,13 @@ def to_uint8(img):
 
 
 def gamma_transform(gray, gamma, c=None):
-    """s = c * r^gamma, con r normalizado a [0,1]."""
+    """Transformación gamma (potencia): s = c * r^gamma.
+
+    `gray` es la imagen en escala de grises (matriz numpy uint8), `r` es
+    esa imagen normalizada a [0,1] (gray/255) y `np.power` aplica el
+    exponente a cada pixel a la vez. gamma<1 aclara la imagen (expande
+    sombras), gamma>1 la oscurece (expande luces).
+    """
     r = gray.astype(np.float64) / 255.0
     if c is None:
         c = 1.0
@@ -21,7 +38,12 @@ def gamma_transform(gray, gamma, c=None):
 
 
 def log_transform(gray, c=None):
-    """s = c * log(1 + r)."""
+    """Transformación logarítmica: s = c * log(1 + r).
+
+    A diferencia de gamma, siempre aclara la imagen, y lo hace expandiendo
+    más los tonos oscuros que los claros. `c` se calcula por defecto para
+    que el pixel más brillante de la entrada quede en 255.
+    """
     r = gray.astype(np.float64)
     if c is None:
         c = 255.0 / np.log(1 + r.max())
@@ -30,13 +52,18 @@ def log_transform(gray, c=None):
 
 
 def negative_transform(gray):
-    """s = 255 - r."""
+    """Transformación negativa: s = 255 - r (invierte los tonos)."""
     return 255 - gray.astype(np.uint8)
 
 
 def piecewise_linear(gray, r1, s1, r2, s2):
-    """Transformación lineal a trozos (contrast stretching) definida por
-    los puntos (0,0) -> (r1,s1) -> (r2,s2) -> (255,255)."""
+    """Transformación lineal a trozos (contrast stretching).
+
+    Define tres rectas que unen los puntos (0,0) -> (r1,s1) -> (r2,s2) ->
+    (255,255). Se usan máscaras booleanas de numpy (comparaciones sobre
+    toda la matriz) para saber en qué tramo cae cada pixel, y luego se le
+    aplica la recta correspondiente a cada uno de esos tramos.
+    """
     gray = gray.astype(np.float64)
     out = np.zeros_like(gray)
 
@@ -52,8 +79,13 @@ def piecewise_linear(gray, r1, s1, r2, s2):
 
 
 def gray_level_slicing(gray, A, B, preserve_background=False):
-    """Realza el rango [A,B] llevándolo a 255, el resto a 0
-    (o al valor original si preserve_background=True)."""
+    """Fraccionamiento de gris: resalta el rango [A,B] llevándolo a 255.
+
+    `mask` es una matriz booleana (True donde el pixel está entre A y B).
+    Si `preserve_background` es False (comportamiento del taller), el
+    resto de la imagen se lleva a 0; si es True, el fondo conserva su
+    valor original en vez de volverse negro.
+    """
     gray = gray.astype(np.uint8)
     mask = (gray >= A) & (gray <= B)
     if preserve_background:
