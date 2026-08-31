@@ -8,10 +8,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
-
-import sys
-sys.path.append("..")
-from utils import to_uint8, gamma_transform, log_transform, piecewise_linear, gray_level_slicing
+import cv2
 
 # Recorte
 #

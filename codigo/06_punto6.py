@@ -8,10 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 from skimage.metrics import structural_similarity as ssim
-
-import sys
-sys.path.append("..")
-from utils import gamma_transform, log_transform, piecewise_linear, negative_transform
+import cv2
 
 # Carga de imágenes
 
@@ -26,16 +23,18 @@ print(input_img.shape, output_ref.shape)
 gray0 = np.array(Image.fromarray(input_img).convert("L"))
 print(f"SSIM solo gris: {ssim(gray0, output_ref):.4f}")
 
-# La referencia se ve con tonos invertidos (fondo oscuro -> claro) respecto al gris de entrada
-intento_1 = negative_transform(gray0)
+# Negativo: cv2.bitwise_not (equivale a 255 - r para uint8)
+intento_1 = cv2.bitwise_not(gray0)
 print(f"SSIM gris + negativo: {ssim(intento_1, output_ref):.4f}")
 
-# Aun asi falta contraste en sombras/luces: se prueba lineal a trozos
-intento_2 = piecewise_linear(intento_1, r1=30, s1=100, r2=220, s2=255)
+# Lineal a trozos: cv2.intensity_transform.contrastStretching
+intento_2 = np.zeros_like(intento_1)
+cv2.intensity_transform.contrastStretching(intento_1, intento_2, 30, 100, 220, 255)
 print(f"SSIM gris + negativo + lineal a trozos: {ssim(intento_2, output_ref):.4f}")
 
-# Queda algo oscuro en tonos medios: se prueba gamma para aclarar
-intento_3 = gamma_transform(intento_2, 2.0)
+# Gamma: cv2.intensity_transform.gammaCorrection
+intento_3 = np.zeros_like(intento_2)
+cv2.intensity_transform.gammaCorrection(intento_2, intento_3, 2.0)
 print(f"SSIM gris + negativo + lineal a trozos + gamma: {ssim(intento_3, output_ref):.4f}")
 
 resultado = intento_3
@@ -57,9 +56,9 @@ print(f"SSIM final: {score:.4f}")
 
 # Mejor aproximación
 #
-# SSIM obtenido: **0.9775** (~97.75%)
+# SSIM obtenido: **0.9765** (~97.65%)
 #
-# Cadena de transformaciones aplicada sobre Input.tif: escala de grises -> negativo -> lineal a trozos (r1=30, s1=100, r2=220, s2=255) -> gamma (gamma=2.0).
+# Cadena de transformaciones aplicada sobre Input.tif: escala de grises -> negativo -> lineal a trozos (r1=30, s1=100, r2=220, s2=255) -> gamma (gamma=2.0), usando cv2.bitwise_not y cv2.intensity_transform (contrastStretching, gammaCorrection).
 
 plt.figure(figsize=(8, 6))
 plt.imshow(resultado, cmap="gray", vmin=0, vmax=255)

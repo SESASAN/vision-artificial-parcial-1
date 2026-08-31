@@ -5,10 +5,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
-
-import sys
-sys.path.append("..")
-from utils import to_uint8, gamma_transform, log_transform, piecewise_linear, gray_level_slicing
+import cv2
 
 # Imagen Original en Escala de Grises
 
@@ -21,7 +18,7 @@ plt.savefig("../results/punto5_gris.png", bbox_inches="tight", pad_inches=0)
 
 # T. Fraccionamiento de Gris — A=30 B=75
 
-slicing_1 = gray_level_slicing(gray, A=30, B=75)
+slicing_1 = cv2.inRange(gray, 30, 75)
 
 plt.imshow(slicing_1, cmap="gray")
 plt.axis("off")
@@ -29,7 +26,7 @@ plt.savefig("../results/punto5_slicing_1.png", bbox_inches="tight", pad_inches=0
 
 # T. Fraccionamiento de Gris — A=130 B=160
 
-slicing_2 = gray_level_slicing(gray, A=130, B=160)
+slicing_2 = cv2.inRange(gray, 130, 160)
 
 plt.imshow(slicing_2, cmap="gray")
 plt.axis("off")
@@ -37,7 +34,7 @@ plt.savefig("../results/punto5_slicing_2.png", bbox_inches="tight", pad_inches=0
 
 # T. Fraccionamiento de Gris — A=200 B=230
 
-slicing_3 = gray_level_slicing(gray, A=200, B=230)
+slicing_3 = cv2.inRange(gray, 200, 230)
 
 plt.imshow(slicing_3, cmap="gray")
 plt.axis("off")

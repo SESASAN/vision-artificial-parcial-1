@@ -5,10 +5,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
-
-import sys
-sys.path.append("..")
-from utils import to_uint8, gamma_transform, log_transform, piecewise_linear, gray_level_slicing
+import cv2
 
 # Imagen Original en Escala de Grises
 
@@ -21,7 +18,8 @@ plt.savefig("../results/punto3_gris.png", bbox_inches="tight", pad_inches=0)
 
 # Transformación Gamma (γ=0.3)
 
-gamma_03 = gamma_transform(gray, 0.3)
+gamma_03 = np.zeros_like(gray)
+cv2.intensity_transform.gammaCorrection(gray, gamma_03, 0.3)
 
 plt.imshow(gamma_03, cmap="gray")
 plt.axis("off")
@@ -29,7 +27,8 @@ plt.savefig("../results/punto3_gamma_0.3.png", bbox_inches="tight", pad_inches=0
 
 # Transformación Gamma (γ=2.3)
 
-gamma_23 = gamma_transform(gray, 2.3)
+gamma_23 = np.zeros_like(gray)
+cv2.intensity_transform.gammaCorrection(gray, gamma_23, 2.3)
 
 plt.imshow(gamma_23, cmap="gray")
 plt.axis("off")
@@ -37,7 +36,8 @@ plt.savefig("../results/punto3_gamma_2.3.png", bbox_inches="tight", pad_inches=0
 
 # Transformación Logarítmica
 
-log_img = log_transform(gray)
+log_img = np.zeros_like(gray)
+cv2.intensity_transform.logTransform(gray, log_img)
 
 plt.imshow(log_img, cmap="gray")
 plt.axis("off")
