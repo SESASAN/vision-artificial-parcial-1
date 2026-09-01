@@ -11,28 +11,51 @@ transformaciones de intensidad (numpy, OpenCV y scikit-image).
 
 ## Instalación
 
-Desde la raíz del proyecto:
+Desde la raíz del proyecto, crear el entorno virtual:
 
 ```bash
 python3 -m venv .venv
-./.venv/bin/pip install -r requirements.txt
+```
+
+Activarlo:
+
+```bash
+# Linux / macOS
+source .venv/bin/activate
+```
+
+```bat
+:: Windows (cmd)
+.venv\Scripts\activate.bat
+```
+
+```powershell
+# Windows (PowerShell)
+.venv\Scripts\Activate.ps1
+```
+
+Con el entorno activado, instalar las dependencias:
+
+```bash
+pip install -r requirements.txt
 ```
 
 ## Ejecutar solo desde `codigo/`
 
 Cada punto tiene su propio script `.py` en `codigo/`, en el mismo orden que
 el enunciado. Los scripts usan rutas relativas (`../images`, `../results`),
-así que hay que ejecutarlos **desde dentro de la carpeta `codigo/`**:
+así que hay que ejecutarlos **desde dentro de la carpeta `codigo/`**, con el
+entorno virtual activado:
 
 ```bash
 cd codigo
-../.venv/bin/python3 00_preparacion.py
-../.venv/bin/python3 01_punto1.py
-../.venv/bin/python3 02_punto2.py
-../.venv/bin/python3 03_punto3.py
-../.venv/bin/python3 04_punto4.py
-../.venv/bin/python3 05_punto5.py
-../.venv/bin/python3 06_punto6.py
+python 00_preparacion.py
+python 01_punto1.py
+python 02_punto2.py
+python 03_punto3.py
+python 04_punto4.py
+python 05_punto5.py
+python 06_punto6.py
 ```
 
 `00_preparacion.py` debe correrse primero: redimensiona la imagen generada
@@ -61,5 +84,5 @@ El mismo código también está disponible como notebooks de Jupyter en
 usarlos:
 
 ```bash
-./.venv/bin/jupyter notebook notebooks/
+jupyter notebook notebooks/
 ```
