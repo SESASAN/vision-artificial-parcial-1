@@ -6,13 +6,27 @@ import cv2
 import sys
 sys.path.append("..")
 
-# TODO: cargar gray (imagen original en escala de grises, ver Punto 1)
-gray = None
+def convolucion(im, kernel):
+    kernel_flip = kernel[::-1, ::-1]
+    return cv2.filter2D(im, -1, kernel_flip, borderType=cv2.BORDER_REPLICATE)
 
-# TODO: definir el kernel de realce con Laplaciano de 4 vecinos (visto en clase)
-# y aplicarlo sobre gray
-realce_4 = None
+img = np.array(Image.open("../images/mi_imagen.png").convert("RGB"))
+gray = np.array(Image.fromarray(img).convert("L")).astype(np.float64)
 
-# TODO: definir el kernel de realce con Laplaciano de 8 vecinos (visto en clase)
-# y aplicarlo sobre gray
-realce_8 = None
+laplaciano_4 = np.array([[0, 1, 0], [1, -4, 1], [0, 1, 0]], dtype=np.float64)
+
+respuesta_4 = convolucion(gray, laplaciano_4)
+realce_4 = np.clip(gray - respuesta_4, 0, 255).astype(np.uint8)
+
+plt.imshow(realce_4, cmap="gray")
+plt.axis("off")
+plt.savefig("../results/punto5_realce_4vecinos.png", bbox_inches="tight", pad_inches=0)
+
+laplaciano_8 = np.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]], dtype=np.float64)
+
+respuesta_8 = convolucion(gray, laplaciano_8)
+realce_8 = np.clip(gray - respuesta_8, 0, 255).astype(np.uint8)
+
+plt.imshow(realce_8, cmap="gray")
+plt.axis("off")
+plt.savefig("../results/punto5_realce_8vecinos.png", bbox_inches="tight", pad_inches=0)
