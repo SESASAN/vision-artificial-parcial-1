@@ -6,16 +6,29 @@ import cv2
 import sys
 sys.path.append("..")
 
-sobel_h = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
-sobel_v = np.array([[1, 0, -1], [2, 0, -2], [1, 0, -1]])
-laplaciano_8 = np.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]])
+sobel_h = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]], dtype=np.float64)
+sobel_v = np.array([[1, 0, -1], [2, 0, -2], [1, 0, -1]], dtype=np.float64)
+laplaciano_8 = np.array([[1, 1, 1], [1, -8, 1], [1, 1, 1]], dtype=np.float64)
 
-# TODO: cargar gray (imagen original en escala de grises, ver Punto 1)
-gray = None
+def convolucion(im, kernel):
+    kernel_flip = kernel[::-1, ::-1]
+    return cv2.filter2D(im, -1, kernel_flip, borderType=cv2.BORDER_REPLICATE)
 
-# TODO: aplicar sobel_h y sobel_v por convolución sobre gray
-# TODO: magnitud del gradiente = |Gx| + |Gy|
-sobel_magnitud = None
+img = np.array(Image.open("../images/mi_imagen.png").convert("RGB"))
+gray = np.array(Image.fromarray(img).convert("L")).astype(np.float64)
 
-# TODO: aplicar laplaciano_8 por convolución sobre gray
-laplaciano_resultado = None
+gx = convolucion(gray, sobel_h)
+gy = convolucion(gray, sobel_v)
+
+sobel_magnitud = np.clip(np.abs(gx) + np.abs(gy), 0, 255).astype(np.uint8)
+
+plt.imshow(sobel_magnitud, cmap="gray")
+plt.axis("off")
+plt.savefig("../results/punto4_sobel_magnitud.png", bbox_inches="tight", pad_inches=0)
+
+laplaciano_conv = convolucion(gray, laplaciano_8)
+laplaciano_resultado = np.clip(np.abs(laplaciano_conv), 0, 255).astype(np.uint8)
+
+plt.imshow(laplaciano_resultado, cmap="gray")
+plt.axis("off")
+plt.savefig("../results/punto4_laplaciano.png", bbox_inches="tight", pad_inches=0)
