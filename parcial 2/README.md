@@ -26,12 +26,38 @@ graded en dos componentes: "Hacer" (40%, construcción de los algoritmos) y
 ## Estructura
 
 - `images/` — `Referencia.tif` (imagen objetivo del punto 2) y la imagen
-  propia que se genere para el taller.
-- `notebooks/` y `codigo/` — pendientes de armar (mismo patrón que
-  `parcial 1`: un notebook/script por punto).
+  propia que se genere para el taller (guardarla como `mi_imagen.png`, ver
+  `00_preparacion`).
+- `notebooks/` — un notebook por punto (`00_preparacion.ipynb` +
+  `0X_puntoX.ipynb`), con el enunciado en celdas de markdown y el código
+  pendiente marcado con `# TODO`.
+- `codigo/` — el mismo código exportado a scripts `.py` planos, uno por
+  punto (sin las celdas markdown).
 - `results/` — imágenes resultado generadas al resolver cada punto.
 
 ## Entorno
 
 Ver el README en la raíz del repositorio para crear y activar el entorno
 virtual compartido (`../requirements.txt`).
+
+## Ejecutar
+
+Con el entorno activado:
+
+```bash
+jupyter notebook "parcial 2/notebooks/"
+```
+
+o, desde `parcial 2/codigo/`, cada script por separado (`python 0X_puntoX.py`),
+en orden, empezando por `00_preparacion.py`.
+
+## Contenido de cada notebook/script
+
+| Archivo | Punto | Qué contiene |
+|---|---|---|
+| `00_preparacion` | — | Carga de la imagen generada con IA |
+| `01_punto1` | 1 | Histograma, ecualización, niveles más probables |
+| `02_punto2` | 2 | Especificación de histograma contra `Referencia.tif` |
+| `03_punto3` | 3 | Ruido (uniforme/gaussiano/sal y pimienta) + 9 filtros + tabla SSIM |
+| `04_punto4` | 4 | Detección de bordes: Sobel (kernels dados) y Laplaciano de 8 vecinos |
+| `05_punto5` | 5 | Realce de bordes: Laplaciano de 4 y 8 vecinos |
